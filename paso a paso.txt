@@ -29,6 +29,9 @@
         Click on the Vite and React logos to learn more
     </p>
 
+
+2) si trae el array 2 veces borrar el StrictMode en main.jsx
+
 =======================================================
 
 instalacion de tailwind
