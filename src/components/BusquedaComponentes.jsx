@@ -22,8 +22,8 @@ const BusquedaComponentes = () => {
     console.log(e.target.value)
   }
 
-  //metodo de filtrado
-  let resultado = [] // arreglo vacio
+  //metodo de filtrado 1 
+  /*let resultado = [] // arreglo vacio
   
   if (!buscador)
   {
@@ -33,8 +33,11 @@ const BusquedaComponentes = () => {
     dato.name.toLowerCase().includes(buscador.toLowerCase())
     )
   }
+  */
 
+//metodo de filtrado 2 con if ternario
 
+  const resultado = !buscador ? usuarios : usuarios.filter ((dato) => dato.name.toLowerCase().includes(buscador.toLowerCase()))
 
   useEffect(() => {
     mostrarDatos()
