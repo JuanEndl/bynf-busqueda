@@ -13,13 +13,16 @@ const BusquedaComponentes = () => {
     const respuesta = await fetch(url)
     const datos = await respuesta.json()
     console.log(datos) // ver los datos que tree con un fech asincronico
+    setUsuarios(datos)
   }
-  mostrarDatos()
+ 
 
   //metodo de filtrado
 
   //funcion de busqueda
-
+  useEffect ( () =>{
+     mostrarDatos()
+  },[])
 
   // renderizado de la vista
   return (
@@ -31,59 +34,25 @@ const BusquedaComponentes = () => {
               Product name
             </th>
             <th scope="col" class="px-6 py-3">
-              Color
+              kg
             </th>
             <th scope="col" class="px-6 py-3">
-              Category
+              Animal
             </th>
             <th scope="col" class="px-6 py-3">
-              Price
+              Precio Venta
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Apple MacBook Pro 17"
-            </th>
-            <td class="px-6 py-4">
-              Silver
-            </td>
-            <td class="px-6 py-4">
-              Laptop
-            </td>
-            <td class="px-6 py-4">
-              $2999
-            </td>
-          </tr>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Microsoft Surface Pro
-            </th>
-            <td class="px-6 py-4">
-              White
-            </td>
-            <td class="px-6 py-4">
-              Laptop PC
-            </td>
-            <td class="px-6 py-4">
-              $1999
-            </td>
-          </tr>
-          <tr class="bg-white dark:bg-gray-800">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Magic Mouse 2
-            </th>
-            <td class="px-6 py-4">
-              Black
-            </td>
-            <td class="px-6 py-4">
-              Accessories
-            </td>
-            <td class="px-6 py-4">
-              $99
-            </td>
-          </tr>
+              { usuarios.map( (usuarios) => (
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200" key= {usuarios.id}>
+                  <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{usuarios.name}</td>
+                  <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{usuarios.username}</td>
+                  <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{usuarios.email}</td>
+                  <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{usuarios.website}</td>
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>
