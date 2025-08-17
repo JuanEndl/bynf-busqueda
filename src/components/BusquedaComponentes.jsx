@@ -3,19 +3,19 @@ import { useEffect, useState } from "react"
 const BusquedaComponentes = () => {
 
   // setear los hooks useState
-  const [usuarios, setUsuarios] = useState([]) // se inicializa como un arreglo vacio
+  const [productos, setProductos] = useState([]) // se inicializa como un arreglo vacio
   const [buscador, setBuscador] = useState("") // valores a los que va a tener el imput se inicializa vacio de esta manera
   const [resultado, setResultado] = useState([]); // borrar en caso de busque por letra
   
 
   //funcion para traer los los datos APi
-  const url = 'https://jsonplaceholder.typicode.com/users'
+  const url = 'http://localhost:5000/productos'
 
   const mostrarDatos = async () => {
     const respuesta = await fetch(url)
     const datos = await respuesta.json()
-    // console.log(datos) // ver los datos que tree con un fetch asincronico
-    setUsuarios(datos)
+    console.log(datos) // ver los datos que tree con un fetch asincronico
+    setProductos(datos)
   }
 
   //funcion de busqueda
@@ -23,35 +23,15 @@ const BusquedaComponentes = () => {
     setBuscador(e.target.value) // busca en tiempo real 
     console.log(e.target.value)
   }
-
-  //metodo de filtrado 1 
-  /*let resultado = [] // arreglo vacio
   
-  if (!buscador)
-  {
-    resultado = usuarios
-  }else {
-    resultado = usuarios.filter( (dato) => 
-    dato.name.toLowerCase().includes(buscador.toLowerCase())
-    )
-  }
-  */
-
-//metodo de filtrado 2 con if ternario
-
-//  const resultado = !buscador ? usuarios : usuarios.filter ((dato) => dato.name.toLowerCase().includes(buscador.toLowerCase()))
-
-
-// metodo boton
-
  const handleSearch = (e) => {
     e.preventDefault(); // evita que el form recargue la página
     if (buscador.trim() === "") {
-      setResultado(usuarios); 
+      setResultado(productos); 
     } else {
       setResultado(
-        usuarios.filter((dato) =>
-          dato.name.toLowerCase().includes(buscador.toLowerCase())
+        productos.filter((dato) =>
+          dato.descripcion.toLowerCase().includes(buscador.toLowerCase())
         )
       );
     }
@@ -65,7 +45,7 @@ const BusquedaComponentes = () => {
   return (
     <div className="relative overflow-x-auto">
 
-      <form className="max-w-md mx-auto" onSubmit={handleSearch}>
+      <form className="max-w-md mx-auto m-10" onSubmit={handleSearch}>
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -81,26 +61,30 @@ const BusquedaComponentes = () => {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Product name
+              Nombre del producto
             </th>
             <th scope="col" className="px-6 py-3">
-              kg
+              Marca
             </th>
-            <th scope="col" className="px-6 py-3">
-              Animal
+             <th scope="col" className="px-6 py-3">
+              Animales
             </th>
             <th scope="col" className="px-6 py-3">
               Precio Venta
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Precio Compra
             </th>
           </tr>
         </thead>
         <tbody>{/* */}
           {resultado.map((resultado) => ( 
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200" key={resultado.id}>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.name}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.username}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.email}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.website}</td>
+              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.descripcion}</td>
+              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.marca}</td>
+              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.animales}</td>
+              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.precioCompra}</td>
+              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.precioVenta}</td>
             </tr>
           ))}
         </tbody>

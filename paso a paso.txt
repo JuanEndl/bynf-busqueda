@@ -1,5 +1,8 @@
 1) una vez instalado todo borrar lo incesario
 
+1.1) https://www.youtube.com/watch?v=CF_lbDaSo48 --> video instalacion de react con filtro de busqueda
+
+
 2) ir a app.jsx y borrar
 
     import { useState } from 'react'
@@ -35,6 +38,9 @@
 =======================================================
 
 instalacion de tailwind
+
+https://www.youtube.com/watch?v=wdNeRA_adn4 --> video 
+
 
 1) ir a la pagina y seleccionar con lo que se instalo vite o otro 
 
