@@ -77,7 +77,7 @@ const BusquedaComponentes = () => {
             </th>
           </tr>
         </thead>
-        <tbody>{/* */}
+        <tbody>{/*probando paginacion de paginas*/}
           {resultado.map((resultado) => ( 
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200" key={resultado.id}>
               <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.descripcion}</td>
