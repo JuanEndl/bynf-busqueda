@@ -1,33 +1,31 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 const BusquedaComponentes = () => {
+  const [productos, setProductos] = useState([]);
+  const [buscador, setBuscador] = useState("");
+  const [resultado, setResultado] = useState([]);
 
-  // setear los hooks useState
-  const [productos, setProductos] = useState([]) // se inicializa como un arreglo vacio
-  const [buscador, setBuscador] = useState("") // valores a los que va a tener el imput se inicializa vacio de esta manera
-  const [resultado, setResultado] = useState([]); // borrar en caso de busque por letra
-  
+  // Paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const productosPorPagina = 12;
 
-  //funcion para traer los los datos APi
-  const url = 'http://localhost:5000/productos'
+  const url = "http://localhost:5000/productos";
 
   const mostrarDatos = async () => {
-    const respuesta = await fetch(url)
-    const datos = await respuesta.json()
-    console.log(datos) // ver los datos que tree con un fetch asincronico
-    setProductos(datos)
-  }
+    const respuesta = await fetch(url);
+    const datos = await respuesta.json();
+    setProductos(datos);
+    setResultado(datos);
+  };
 
-  //funcion de busqueda
-  const buscadores = (e) =>{
-    setBuscador(e.target.value) // busca en tiempo real 
-    console.log(e.target.value)
-  }
-  
- const handleSearch = (e) => {
-    e.preventDefault(); // evita que el form recargue la página
+  const buscadores = (e) => {
+    setBuscador(e.target.value);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
     if (buscador.trim() === "") {
-      setResultado(productos); 
+      setResultado(productos);
     } else {
       setResultado(
         productos.filter((dato) =>
@@ -35,63 +33,87 @@ const BusquedaComponentes = () => {
         )
       );
     }
+    setPaginaActual(1);
   };
 
   useEffect(() => {
-    mostrarDatos()
-  }, [])
+    mostrarDatos();
+  }, []);
 
-  // renderizado de la vista
+  // Cálculo para paginación
+  const indexUltimo = paginaActual * productosPorPagina;
+  const indexPrimero = indexUltimo - productosPorPagina;
+  const productosActuales = resultado.slice(indexPrimero, indexUltimo);
+
+  const totalPaginas = Math.ceil(resultado.length / productosPorPagina);
+
   return (
     <div className="relative overflow-x-auto">
-
       <form className="max-w-md mx-auto m-10" onSubmit={handleSearch}>
         <div className="relative">
-          <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-            </svg>
-          </div>
-          <input value={buscador} onChange = {buscadores} type="search" id="default-search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar valor deseado"/>
-          <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+          <input value={buscador} onChange={buscadores} type="search" placeholder="Buscar valor ....." className="block w-full p-4 ps-10 border rounded-lg"/>
+          <button type="submit" className="absolute end-2.5 bottom-2.5 bg-blue-700 text-white px-4 py-2 rounded-lg">
+            Buscar
+          </button>
         </div>
       </form>
 
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="px-6 py-3">
-              Nombre del producto
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Marca
-            </th>
-             <th scope="col" className="px-6 py-3">
-              Animales
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Precio Venta
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Precio Compra
-            </th>
+            <th className="px-6 py-3">Nombre del producto</th>
+            <th className="px-6 py-3">Marca</th>
+            <th className="px-6 py-3">Animales</th>
+            <th className="px-6 py-3">Precio Venta</th>
+            <th className="px-6 py-3">Precio Compra</th>
           </tr>
         </thead>
-        <tbody>{/*probando paginacion de paginas*/}
-          {resultado.map((resultado) => ( 
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200" key={resultado.id}>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.descripcion}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.marca}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.animales}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.precioCompra}</td>
-              <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{resultado.precioVenta}</td>
+        <tbody className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+          {productosActuales.map((item) => (
+            <tr key={item.id} className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <td className="px-6 py-4">{item.descripcion}</td>
+              <td className="px-6 py-4">{item.marca}</td>
+              <td className="px-6 py-4">{item.animales}</td>
+              <td className="px-6 py-4">{item.precioCompra}</td>
+              <td className="px-6 py-4">{item.precioVenta}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* 🔹 Texto de entradas y botones */}
+      <div className="flex flex-col items-center mt-4">
+        <span className="text-sm text-gray-700">
+          Mostrando{" "}
+          <span className="font-semibold text-gray-900">
+            {indexPrimero + 1}
+          </span>{" "}
+          a{" "}
+          <span className="font-semibold text-gray-900">
+            {Math.min(indexUltimo, resultado.length)}
+          </span>{" "}
+          de <span className="font-semibold text-gray-900">{resultado.length}</span>{" "}
+          entradas
+        </span>
+        <div className="inline-flex mt-2 xs:mt-0 space-x-2">
+          <button
+            onClick={() => setPaginaActual(paginaActual - 1)}
+            disabled={paginaActual === 1}
+            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 disabled:opacity-50"
+          >
+            Anterior
+          </button>
+          <button
+            onClick={() => setPaginaActual(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-r hover:bg-gray-900 disabled:opacity-50"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
     </div>
+  );
+};
 
-  )
-}
-
-export default BusquedaComponentes
+export default BusquedaComponentes;
