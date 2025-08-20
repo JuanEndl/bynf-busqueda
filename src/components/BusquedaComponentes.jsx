@@ -96,18 +96,10 @@ const BusquedaComponentes = () => {
           entradas
         </span>
         <div className="inline-flex mt-2 xs:mt-0 space-x-2">
-          <button
-            onClick={() => setPaginaActual(paginaActual - 1)}
-            disabled={paginaActual === 1}
-            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 disabled:opacity-50"
-          >
+          <button onClick={() => setPaginaActual(paginaActual - 1)} disabled={paginaActual === 1} className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 disabled:opacity-50">
             Anterior
           </button>
-          <button
-            onClick={() => setPaginaActual(paginaActual + 1)}
-            disabled={paginaActual === totalPaginas}
-            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-r hover:bg-gray-900 disabled:opacity-50"
-          >
+          <button onClick={() => setPaginaActual(paginaActual + 1)} disabled={paginaActual === totalPaginas} className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-r hover:bg-gray-900 disabled:opacity-50">
             Siguiente
           </button>
         </div>
