@@ -40,7 +40,7 @@ const BusquedaComponentes = () => {
     mostrarDatos();
   }, []);
 
-  // Cálculo para paginación
+  // Cálculo para paginación 
   const indexUltimo = paginaActual * productosPorPagina;
   const indexPrimero = indexUltimo - productosPorPagina;
   const productosActuales = resultado.slice(indexPrimero, indexUltimo);
