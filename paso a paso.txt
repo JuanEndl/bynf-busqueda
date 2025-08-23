@@ -53,3 +53,25 @@ https://www.youtube.com/watch?v=wdNeRA_adn4 --> video
         2) agregar tailwindcss() al plugins adentro de []
 
     c) ir a index.css, borrar todo y agregar solo @import "tailwindcss";
+
+
+=======================================================
+
+colocar ip
+
+1) En el package.json de tu proyecto React, en la sección scripts modifica el start así:
+
+  "scripts": {
+  "dev": "vite --host"
+  }
+
+  ejemplo:
+
+    "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+
+  esto lo que hace es tomarte tu ip
