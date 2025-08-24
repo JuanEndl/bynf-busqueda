@@ -104,18 +104,19 @@ const BusquedaComponentes = () => {
             <th className="px-6 py-3">Animales</th>
             <th className="px-6 py-3">Precio Compra</th>
             <th className="px-6 py-3">Precio Venta</th>
-            <span className="sr-only">Edit</span>
           </tr>
         </thead>
         <tbody className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
           {productosActuales.map((item) => (
-            <tr key={item.id} className="bg-white font-medium border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:text-white"> {/*px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white*/}
+            <tr key={item.id} className="bg-white font-medium border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:text-white">
               <td className="px-6 py-4">{item.descripcion}</td>
               <td className="px-6 py-4">{item.marca}</td>
               <td className="px-6 py-4">{item.animales}</td>
-              <td className="px-6 py-4">{item.precioCompra}</td>
+              <td className="px-6 py-4">{item.precioCompra}
+                <a href="#" className="ml-5 font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
               <td className="px-6 py-4">{item.precioVenta}</td>
-              <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              
             </tr>
           ))}
         </tbody>
