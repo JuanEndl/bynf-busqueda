@@ -75,3 +75,30 @@ colocar ip
   },
 
   esto lo que hace es tomarte tu ip
+
+
+=======================================================
+
+  https://www.facebook.com/reel/1431297128132167 // exportar a excel
+
+
+=======================================================
+
+colcoar variables de entorno:
+
+1) crear la constante
+   const url = import.meta.env.VITE_API_URL;
+
+2) crear el archivo .env y colocar
+
+  # Archivo .env
+  VITE_API_URL=http://localhost:5020/productos
+
+3) despues llamarlo desde el fech
+
+  const mostrarDatos = async () => {
+    const respuesta = await fetch(`${url}`); // se coloca la variable de entorno que busca el .env
+    const datos = await respuesta.json();
+    setProductos(datos);
+    setResultado(datos);
+  };

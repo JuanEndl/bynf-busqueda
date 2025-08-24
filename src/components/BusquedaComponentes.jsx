@@ -12,12 +12,15 @@ const BusquedaComponentes = () => {
 
   // Paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const productosPorPagina = 12;
+  const productosPorPagina = 12; // total de cantidad de productos mostrados
 
-  const url = "http://localhost:5000/productos";
+
+
+  
+  const url = import.meta.env.VITE_API_URL; // variable de entorno
 
   const mostrarDatos = async () => {
-    const respuesta = await fetch(url);
+    const respuesta = await fetch(`${url}`); // se coloca la variable de entorno que busca el .env
     const datos = await respuesta.json();
     setProductos(datos);
     setResultado(datos);
@@ -101,22 +104,24 @@ const BusquedaComponentes = () => {
             <th className="px-6 py-3">Animales</th>
             <th className="px-6 py-3">Precio Compra</th>
             <th className="px-6 py-3">Precio Venta</th>
+            <span className="sr-only">Edit</span>
           </tr>
         </thead>
         <tbody className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
           {productosActuales.map((item) => (
-            <tr key={item.id} className="bg-white font-medium border-b  dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:text-white"> {/*px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white*/}
+            <tr key={item.id} className="bg-white font-medium border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:text-white"> {/*px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white*/}
               <td className="px-6 py-4">{item.descripcion}</td>
               <td className="px-6 py-4">{item.marca}</td>
               <td className="px-6 py-4">{item.animales}</td>
               <td className="px-6 py-4">{item.precioCompra}</td>
               <td className="px-6 py-4">{item.precioVenta}</td>
+              <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/*Texto de entradas y botones */}
+      {/*Texto de entradas y botones paginacion */}
       <div className="flex flex-col items-center mt-4">
         <span className="text-sm text-gray-700">
           Mostrando{" "}
