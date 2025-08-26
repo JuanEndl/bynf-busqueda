@@ -69,6 +69,37 @@ const BusquedaComponentes = () => {
     mostrarDatos();
   }, []);
 
+// Actualizar precio
+const editarProducto = async (id) => {
+  const nuevoPrecio = prompt("Ingrese el nuevo precio de compra:");
+  if (!nuevoPrecio) return;
+
+  try {
+    const response = await fetch(`http://localhost:5000/productos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ precioCompra: nuevoPrecio }),
+    });
+
+    const data = await response.json();
+    alert(data.mensaje);
+
+    // 🔄 Refrescar la lista de productos
+    setProductos((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, precioCompra: nuevoPrecio } : p
+      )
+    );
+  } catch (error) {
+    console.error("Error al actualizar:", error);
+  }
+};
+
+
+
+
   // Paginación
   const indexUltimo = paginaActual * productosPorPagina;
   const indexPrimero = indexUltimo - productosPorPagina;
@@ -113,7 +144,8 @@ const BusquedaComponentes = () => {
               <td className="px-6 py-4">{item.marca}</td>
               <td className="px-6 py-4">{item.animales}</td>
               <td className="px-6 py-4">{item.precioCompra}
-                <a href="#" className="ml-5 font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                <a href="#" className="ml-5 font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={() => editarProducto(item.id)}>Edit</a>
+                
               </td>
               <td className="px-6 py-4">{item.precioVenta}</td>
               
