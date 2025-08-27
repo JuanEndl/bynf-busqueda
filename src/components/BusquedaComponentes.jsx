@@ -14,7 +14,10 @@ const BusquedaComponentes = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const productosPorPagina = 12; // total de cantidad de productos mostrados
 
-
+  // Estados para el modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [nuevoPrecio, setNuevoPrecio] = useState("");
 
   
   const url = import.meta.env.VITE_API_URL; // variable de entorno
@@ -69,34 +72,44 @@ const BusquedaComponentes = () => {
     mostrarDatos();
   }, []);
 
-// Actualizar precio
-const editarProducto = async (id) => {
-  const nuevoPrecio = prompt("Ingrese el nuevo precio de compra:");
-  if (!nuevoPrecio) return;
 
-  try {
-    const response = await fetch(`http://localhost:5000/productos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ precioCompra: nuevoPrecio }),
-    });
+    // 👉 Abre el modal con el producto a editar
+    const editarProducto = (id) => {
+    const producto = productos.find((p) => p.id === id);
+    setProductoSeleccionado(producto);
+    setNuevoPrecio(producto.precioCompra);
+    setModalOpen(true);
+  };
 
-    const data = await response.json();
-    alert(data.mensaje);
+  // Llama al backend para actualizar (usando fetch)
+  const guardarCambios = async () => {
+    try {
+      const respuesta = await fetch(
+        `http://localhost:5000/productos/${productoSeleccionado.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ precioCompra: nuevoPrecio }),
+        }
+      );
 
-    // 🔄 Refrescar la lista de productos
-    setProductos((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, precioCompra: nuevoPrecio } : p
-      )
-    );
-  } catch (error) {
-    console.error("Error al actualizar:", error);
-  }
-};
+      if (!respuesta.ok) throw new Error("Error al actualizar");
 
+      // Actualiza estado local sin recargar
+      const actualizados = productos.map((p) =>
+        p.id === productoSeleccionado.id ? { ...p, precioCompra: nuevoPrecio } : p
+      );
+
+      setProductos(actualizados);
+      setResultado(actualizados);
+
+      alert("Precio actualizado correctamente ✅");
+      setModalOpen(false);
+    } catch (error) {
+      console.error("Error al actualizar:", error);
+      alert("Hubo un error al actualizar ❌");
+    }
+  };
 
 
 
@@ -154,6 +167,24 @@ const editarProducto = async (id) => {
         </tbody>
       </table>
 
+          {/* Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
+            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} className="w-full p-2 border rounded mb-4"/>
+            <div className="flex justify-end space-x-2">
+              <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 rounded text-white">
+                Cancelar
+              </button>
+              <button onClick={guardarCambios} className="px-4 py-2 bg-blue-600 rounded text-white">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+        
       {/*Texto de entradas y botones paginacion */}
       <div className="flex flex-col items-center mt-4">
         <span className="text-sm text-gray-700">
@@ -169,18 +200,10 @@ const editarProducto = async (id) => {
           entradas
         </span>
         <div className="inline-flex mt-2 xs:mt-0 space-x-2">
-          <button
-            onClick={() => setPaginaActual(paginaActual - 1)}
-            disabled={paginaActual === 1}
-            className="px-4 h-10 bg-gray-800 text-white rounded-l disabled:opacity-50"
-          >
+          <button onClick={() => setPaginaActual(paginaActual - 1)} disabled={paginaActual === 1} className="px-4 h-10 bg-gray-800 text-white rounded-l disabled:opacity-50">
             Anterior
           </button>
-          <button
-            onClick={() => setPaginaActual(paginaActual + 1)}
-            disabled={paginaActual === totalPaginas}
-            className="px-4 h-10 bg-gray-800 text-white rounded-r disabled:opacity-50"
-          >
+          <button onClick={() => setPaginaActual(paginaActual + 1)} disabled={paginaActual === totalPaginas} className="px-4 h-10 bg-gray-800 text-white rounded-r disabled:opacity-50">
             Siguiente
           </button>
         </div>
