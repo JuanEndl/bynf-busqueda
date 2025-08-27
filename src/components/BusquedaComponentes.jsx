@@ -103,11 +103,11 @@ const BusquedaComponentes = () => {
       setProductos(actualizados);
       setResultado(actualizados);
 
-      alert("Precio actualizado correctamente ✅");
+      alert("Precio actualizado correctamente");
       setModalOpen(false);
     } catch (error) {
       console.error("Error al actualizar:", error);
-      alert("Hubo un error al actualizar ❌");
+      alert("Hubo un error al actualizar");
     }
   };
 
@@ -135,7 +135,7 @@ const BusquedaComponentes = () => {
           <option value="Perro/Gato">Perro/Gato</option>
         </select>
 
-        <button type="submit" className="col-span-4 bg-blue-600 text-white p-2 rounded">
+        <button type="submit" className="col-span-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           Buscar
         </button>
       </form>
@@ -173,12 +173,12 @@ const BusquedaComponentes = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
             <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} className="w-full p-2 border rounded mb-4"/>
-            <div className="flex justify-end space-x-2">
-              <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 rounded text-white">
-                Cancelar
-              </button>
-              <button onClick={guardarCambios} className="px-4 py-2 bg-blue-600 rounded text-white">
+            <div className="flex justify-center space-x-2">              
+              <button onClick={guardarCambios} className="px-4 py-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Guardar
+              </button>
+              <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                Cancelar
               </button>
             </div>
           </div>
