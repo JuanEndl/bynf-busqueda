@@ -14,12 +14,16 @@ const BusquedaComponentes = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const productosPorPagina = 12; // total de cantidad de productos mostrados
 
-  // Estados para el modal
+  // Estados para el modal editar
   const [modalOpen, setModalOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [nuevoPrecio, setNuevoPrecio] = useState("");
 
-  
+
+  // Estado del alerta modal
+  const [alertVisible, setAlertVisible] = useState(false);
+
+
   const url = import.meta.env.VITE_API_URL; // variable de entorno
 
   const mostrarDatos = async () => {
@@ -73,8 +77,8 @@ const BusquedaComponentes = () => {
   }, []);
 
 
-    // 👉 Abre el modal con el producto a editar
-    const editarProducto = (id) => {
+  //  Abre el modal con el producto a editar
+  const editarProducto = (id) => {
     const producto = productos.find((p) => p.id === id);
     setProductoSeleccionado(producto);
     setNuevoPrecio(producto.precioCompra);
@@ -103,8 +107,10 @@ const BusquedaComponentes = () => {
       setProductos(actualizados);
       setResultado(actualizados);
 
-      alert("Precio actualizado correctamente");
+      //  Modal de archivo exito o fallido
       setModalOpen(false);
+      setAlertVisible(true); // Mostrar alerta
+      setTimeout(() => setAlertVisible(false), 6000); // Ocultar después de 3 seg
     } catch (error) {
       console.error("Error al actualizar:", error);
       alert("Hubo un error al actualizar");
@@ -122,12 +128,27 @@ const BusquedaComponentes = () => {
 
   return (
     <div className="relative overflow-x-auto">
+
+      {/*  Modal Alerta */}
+      {alertVisible && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+          <svg className="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <span className="sr-only">Info</span>
+          <div>
+            <span className="font-medium">¡Precio actualizado correctamente!</span>
+          </div>
+        </div>
+      )}
+
+
       <form onSubmit={handleSearch} className="grid grid-cols-4 gap-5 p-2 border-2 rounded-lg block w-full my-5">
-        <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Nombre del producto" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+        <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Nombre del producto" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         <input type="text" name="marca" value={buscador.marca} onChange={buscadores} placeholder="Marca" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
 
-        <select name="animales"value={buscador.animales} onChange={buscadores} className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <select name="animales" value={buscador.animales} onChange={buscadores} className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           <option value="">Elegir animal (todos)</option>
           <option value="Perro">Perro</option>
           <option value="Gato">Gato</option>
@@ -147,33 +168,31 @@ const BusquedaComponentes = () => {
             <th className="px-6 py-3">Marca</th>
             <th className="px-6 py-3">Animales</th>
             <th className="px-6 py-3">Precio Compra</th>
-            <th className="px-6 py-3">Precio Venta</th>
+            <th className="px-6 py-3">Precio Venta al 25%</th>
           </tr>
         </thead>
         <tbody className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
           {productosActuales.map((item) => (
             <tr key={item.id} className="bg-white font-medium border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:text-white">
-              <td className="px-6 py-4">{item.descripcion}</td>
-              <td className="px-6 py-4">{item.marca}</td>
-              <td className="px-6 py-4">{item.animales}</td>
-              <td className="px-6 py-4">{item.precioCompra}
-                <a href="#" className="ml-5 font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={() => editarProducto(item.id)}>Edit</a>
-                
+              <td className="px-6 py-5">{item.descripcion}</td>
+              <td className="px-6 py-5">{item.marca}</td>
+              <td className="px-6 py-5">{item.animales}</td>
+              <td className="px-6 py-5">$ {item.precioCompra}
+                <a href="#" className="ml-5 font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={() => editarProducto(item.id)}>Editar</a>
               </td>
-              <td className="px-6 py-4">{item.precioVenta}</td>
-              
+              <td className="px-6 py-5">$ {item.precioVenta}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-          {/* Modal */}
+      {/* Modal editar*/}
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
-            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} className="w-full p-2 border rounded mb-4"/>
-            <div className="flex justify-center space-x-2">              
+            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} className="w-full p-2 border rounded mb-4" />
+            <div className="flex justify-center space-x-2">
               <button onClick={guardarCambios} className="px-4 py-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Guardar
               </button>
@@ -184,7 +203,9 @@ const BusquedaComponentes = () => {
           </div>
         </div>
       )}
-        
+
+
+
       {/*Texto de entradas y botones paginacion */}
       <div className="flex flex-col items-center mt-4">
         <span className="text-sm text-gray-700">
