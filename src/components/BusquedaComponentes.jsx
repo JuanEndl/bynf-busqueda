@@ -89,7 +89,7 @@ const BusquedaComponentes = () => {
   const guardarCambios = async () => {
     try {
       const respuesta = await fetch(
-        `http://localhost:5000/productos/${productoSeleccionado.id}`,
+        `${url}/${productoSeleccionado.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
