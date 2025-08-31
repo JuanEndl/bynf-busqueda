@@ -101,8 +101,10 @@ const BusquedaComponentes = () => {
 
       // Actualiza estado local sin recargar
       const actualizados = productos.map((p) =>
-        p.id === productoSeleccionado.id ? { ...p, precioCompra: nuevoPrecio } : p
-      );
+      p.id === productoSeleccionado.id 
+        ? { ...p, precioCompra: Number(nuevoPrecio) } 
+        : p
+    );
 
       setProductos(actualizados);
       setResultado(actualizados);
@@ -180,7 +182,7 @@ const BusquedaComponentes = () => {
               <td className="px-6 py-5">$ {item.precioCompra}
                 <a href="#" className="ml-5 font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={() => editarProducto(item.id)}>Editar</a>
               </td>
-              <td className="px-6 py-5">$ {item.precioVenta}</td>
+              <td className="px-6 py-5">$ {(item.precioCompra * 1.25).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
