@@ -44,33 +44,33 @@ const BusquedaComponentes = () => {
 
   // Filtrado
   const handleSearch = (e) => {
-    e.preventDefault();
-    let filtrados = productos;
+  e.preventDefault();
+  let filtrados = productos;
 
-    if (buscador.descripcion.trim() !== "") {
-      filtrados = filtrados.filter((dato) =>
-        dato.descripcion.toLowerCase().includes(buscador.descripcion.toLowerCase())
-      );
-    }
-    if (buscador.kg.trim() !== "") {
-      filtrados = filtrados.filter((dato) =>
-        dato.descripcion.toLowerCase().includes(buscador.kg.toLowerCase())
-      );
-    }
-    if (buscador.marca.trim() !== "") {
-      filtrados = filtrados.filter((dato) =>
-        dato.marca.toLowerCase().includes(buscador.marca.toLowerCase())
-      );
-    }
-    if (buscador.animales.trim() !== "") {
-      filtrados = filtrados.filter((dato) =>
-        dato.animales.toLowerCase().includes(buscador.animales.toLowerCase())
-      );
-    }
+  if (buscador.descripcion.trim() !== "") {
+    filtrados = filtrados.filter((dato) =>
+      (dato.descripcion || "").toLowerCase().includes(buscador.descripcion.toLowerCase())
+    );
+  }
+  if (buscador.kg.trim() !== "") {
+    filtrados = filtrados.filter((dato) =>
+      (dato.descripcion || "").toLowerCase().includes(buscador.kg.toLowerCase())
+    );
+  }
+  if (buscador.marca.trim() !== "") {
+    filtrados = filtrados.filter((dato) =>
+      (dato.marca || "").toLowerCase().includes(buscador.marca.toLowerCase())
+    );
+  }
+  if (buscador.animales.trim() !== "") {
+    filtrados = filtrados.filter((dato) =>
+      (dato.animales || "").toLowerCase().includes(buscador.animales.toLowerCase())
+    );
+  }
 
-    setResultado(filtrados);
-    setPaginaActual(1);
-  };
+  setResultado(filtrados);
+  setPaginaActual(1);
+};
 
   useEffect(() => {
     mostrarDatos();
