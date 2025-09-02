@@ -160,7 +160,7 @@ const BusquedaComponentes = () => {
         </thead>
         <tbody>
           {productosActuales.map((item) => (
-            <tr key={item.id} className="bg-white font-medium border-b">
+            <tr key={item.id} className="bg-white font-medium border-b hover:bg-gray-200">
               <td className="text-xl px-6 py-5">{item.descripcion}</td>
               <td className="text-xl px-7 py-5">{item.marca}</td>
               <td className="text-xl px-10 py-5">{item.animales}</td>
