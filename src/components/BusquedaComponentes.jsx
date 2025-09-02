@@ -148,8 +148,8 @@ const BusquedaComponentes = () => {
         </button>
       </form>
 
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 my-8">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+      <table className="w-full text-sm text-left rtl:text-right text-dark my-8">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
           <tr>
             <th className="text-xl px-6 py-3">Nombre del producto</th>
             <th className="text-xl px-6 py-3">Marca</th>
@@ -158,7 +158,7 @@ const BusquedaComponentes = () => {
             <th className="text-xl px-6 py-3">Precio Venta al 25%</th>
           </tr>
         </thead>
-        <tbody className="bg-white border-b">
+        <tbody>
           {productosActuales.map((item) => (
             <tr key={item.id} className="bg-white font-medium border-b">
               <td className="text-xl px-6 py-5">{item.descripcion}</td>
@@ -166,7 +166,7 @@ const BusquedaComponentes = () => {
               <td className="text-xl px-6 py-5">{item.animales}</td>
               <td className="text-xl px-6 py-5">
                 $ {item.precioCompra}
-                <a href="#" className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</a>
+                <a className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</a>
               </td>
               <td className="text-xl px-6 py-5">$ {(item.precioCompra * 1.25).toFixed(2)}</td>
             </tr>
