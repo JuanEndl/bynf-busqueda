@@ -149,7 +149,7 @@ const BusquedaComponentes = () => {
       </form>
 
       <table className="w-full text-sm text-left rtl:text-right text-dark my-8">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+        <thead className="text-xs  uppercase bg-gray-300">
           <tr>
             <th className="text-xl px-6 py-3">Nombre del producto</th>
             <th className="text-xl px-6 py-3">Marca</th>
@@ -162,13 +162,13 @@ const BusquedaComponentes = () => {
           {productosActuales.map((item) => (
             <tr key={item.id} className="bg-white font-medium border-b">
               <td className="text-xl px-6 py-5">{item.descripcion}</td>
-              <td className="text-xl x-6 py-5">{item.marca}</td>
-              <td className="text-xl px-6 py-5">{item.animales}</td>
-              <td className="text-xl px-6 py-5">
+              <td className="text-xl px-7 py-5">{item.marca}</td>
+              <td className="text-xl px-10 py-5">{item.animales}</td>
+              <td className="text-xl px-10 py-5">
                 $ {item.precioCompra}
-                <a className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</a>
+                <button className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</button>
               </td>
-              <td className="text-xl px-6 py-5">$ {(item.precioCompra * 1.25).toFixed(2)}</td>
+              <td className="text-xl px-20 py-5">$ {(item.precioCompra * 1.25).toFixed(0)}</td>
             </tr>
           ))}
         </tbody>
@@ -177,12 +177,12 @@ const BusquedaComponentes = () => {
       {/* Modal editar */}
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
-            <p>Nombre del producto</p>
-            <p className="mb-2 font-bold">{productoSeleccionado.descripcion}</p>
-            <p className="mb-2 font-bold text-red-800 rounded-lg">Precio anterior ${productoSeleccionado.precioCompra}</p>
-            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 border rounded mb-4"/>
+            <p className = "my-4">Nombre del producto</p>
+            <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
+            <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
+            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded "/>
             <div className="flex justify-center space-x-2">
               <button type="button" onClick={guardarCambios} className="px-4 py-2 text-white bg-blue-700 rounded-lg">Guardar</button>
               <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 rounded-lg px-5 py-2.5">Cancelar</button>
