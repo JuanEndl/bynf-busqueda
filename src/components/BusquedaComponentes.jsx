@@ -14,12 +14,12 @@ const BusquedaComponentes = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const productosPorPagina = 12;
 
-  // Modal editar
+  // Modal editar precio
   const [modalOpen, setModalOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [nuevoPrecio, setNuevoPrecio] = useState("");
 
-  // Alerta
+  // Alerta si se hice cambio correcto o no
   const [alertVisible, setAlertVisible] = useState(false);
 
   const url = import.meta.env.VITE_API_URL;
@@ -132,7 +132,7 @@ const BusquedaComponentes = () => {
         </div>
       )}
 
-      <form onSubmit={handleSearch} className="grid grid-cols-4 gap-5 p-2 border-2 rounded-lg  w-full my-5">
+      <form onSubmit={handleSearch} className="grid grid-cols-4 gap-5 p-2 border-2 rounded-lg w-full my-5">
         <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Nombre del producto" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
         <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
         <input type="text" name="marca" value={buscador.marca} onChange={buscadores} placeholder="Marca" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
@@ -168,7 +168,7 @@ const BusquedaComponentes = () => {
                 $ {item.precioCompra}
                 <button className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</button>
               </td>
-              <td className="text-xl px-20 py-5">$ {(item.precioCompra * 1.25).toFixed(0)}</td>
+              <td className="text-xl px-20 py-5">$ {(item.precioCompra * 1.25).toFixed(0)}</td> {/*el tofixed --> Redondear el número a la cantidad de decimales que le indiques, y devolverlo como string.*/}
             </tr>
           ))}
         </tbody>
