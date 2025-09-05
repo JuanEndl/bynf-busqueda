@@ -143,7 +143,7 @@ const BusquedaComponentes = () => {
           <option value="Peces">Peces</option>
           <option value="Perro/Gato">Perro/Gato</option>
         </select>
-        <button type="submit" className="col-span-4 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+        <button type="submit"  className="col-span-4 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
           Buscar
         </button>
       </form>
