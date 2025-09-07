@@ -93,7 +93,7 @@ const BusquedaComponentes = () => {
 
   const guardarCambios = async () => {
     try {
-      const respuesta = await fetch(`${url}/${productoSeleccionado.id}`, {
+      const respuesta = await fetch(`${url}/productos/${productoSeleccionado.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ precioCompra: nuevoPrecio }),
