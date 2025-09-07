@@ -34,7 +34,7 @@ const BusquedaComponentes = () => {
   const url = import.meta.env.VITE_API_URL;
 
   const mostrarDatos = async () => {
-    const respuesta = await fetch(`${url}`);
+    const respuesta = await fetch(`${url}/productos`);
     const datos = await respuesta.json();
     setProductos(datos);
     setResultado(datos);
