@@ -266,13 +266,14 @@ const BusquedaComponentes = () => {
 
       {/* Modal Editar Precio */}
       {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
+        <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
-            <p className="my-2 font-semibold">{productoSeleccionado.descripcion}</p>
-            <p className="my-2 font-semibold text-red-500">Precio anterior: ${productoSeleccionado.precioCompra}</p>
-            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded" />
-            <div className="flex justify-center space-x-2 mt-2">
+            <p className = "my-4">Nombre del producto</p>
+            <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
+            <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
+            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded "/>
+            <div className="flex justify-center space-x-2">
               <button type="button" onClick={guardarCambios} className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg">Guardar</button>
               <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 rounded-lg px-5 py-2.5">Cancelar</button>
             </div>
