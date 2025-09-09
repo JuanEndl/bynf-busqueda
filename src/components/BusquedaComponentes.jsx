@@ -22,26 +22,47 @@ const BusquedaComponentes = () => {
   // Modal agregar producto
   const [modalAgregarOpen, setModalAgregarOpen] = useState(false);
   const [nuevoProducto, setNuevoProducto] = useState({
-    name: "",
-    price: "",
-    category: "",
     description: "",
+    idMarca: "",
+    idAnimal: "",
+    idEdadAnimal: "",
+    idPesoProducto: "",
+    precioCompra: "",
   });
 
-  // Alerta si se hizo cambio correcto o no
+  // Metadata para selects
+  const [metadata, setMetadata] = useState({
+    animales: [],
+    edades: [],
+    marcas: [],
+    pesos: [],
+  });
+
+  // Alerta
   const [alertVisible, setAlertVisible] = useState(false);
 
   const url = import.meta.env.VITE_API_URL;
 
+  // Traer productos
   const mostrarDatos = async () => {
-    const respuesta = await fetch(`${url}/productos`);
-    const datos = await respuesta.json();
-    setProductos(datos);
-    setResultado(datos);
+    try {
+      const respuesta = await fetch(`${url}/productos`);
+      const datos = await respuesta.json();
+      setProductos(datos);
+      setResultado(datos);
+    } catch (err) {
+      console.error("Error cargando productos:", err);
+    }
   };
 
   useEffect(() => {
     mostrarDatos();
+
+    // Traer metadata
+    fetch(`${url}/metadata`)
+      .then((res) => res.json())
+      .then((data) => setMetadata(data))
+      .catch((err) => console.error("Error cargando metadata:", err));
   }, []);
 
   // Manejar cambios en inputs
@@ -61,7 +82,9 @@ const BusquedaComponentes = () => {
     }
     if (filtro.kg.trim() !== "") {
       filtrados = filtrados.filter((dato) =>
-        (dato.descripcion || "").toLowerCase().includes(filtro.kg.toLowerCase())
+        (dato.descripcion || "")
+          .toLowerCase()
+          .includes(filtro.kg.toLowerCase())
       );
     }
     if (filtro.marca.trim() !== "") {
@@ -84,6 +107,7 @@ const BusquedaComponentes = () => {
     setPaginaActual(1);
   };
 
+  // Editar producto
   const editarProducto = (id) => {
     const producto = productos.find((p) => p.id === id);
     setProductoSeleccionado(producto);
@@ -118,13 +142,34 @@ const BusquedaComponentes = () => {
     }
   };
 
-  // Manejar agregar producto
-  const handleAgregarProducto = (e) => {
+  // Agregar producto
+  const handleAgregarProducto = async (e) => {
     e.preventDefault();
-    console.log("Producto a agregar:", nuevoProducto);
-    // Aquí podrías enviar POST a tu API
-    setModalAgregarOpen(false);
-    setNuevoProducto({ name: "", price: "", category: "", description: "" });
+    try {
+      const res = await fetch(`${url}/productos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevoProducto),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ Producto agregado correctamente");
+        setModalAgregarOpen(false);
+        setNuevoProducto({
+          description: "",
+          idMarca: "",
+          idAnimal: "",
+          idEdadAnimal: "",
+          idPesoProducto: "",
+          precioCompra: "",
+        });
+        mostrarDatos();
+      } else {
+        alert("❌ Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error al agregar producto:", error);
+    }
   };
 
   // Paginación
@@ -191,21 +236,27 @@ const BusquedaComponentes = () => {
 
       {/* Modal Agregar Producto */}
       {modalAgregarOpen && (
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Agregar Nuevo Producto</h2>
-            <form onSubmit={handleAgregarProducto}>
-              <input type="text" placeholder="Descripcion" value={nuevoProducto.descripcion} onChange={(e) => setNuevoProducto({ ...nuevoProducto, name: e.target.value })}  className="w-full p-2 mb-2 border rounded" required />
-              <input type="text" placeholder="Marca" value={nuevoProducto.marca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, price: e.target.value })} className="w-full p-2 mb-2 border rounded" required/>
-              <select type="text" placeholder="Animales" value={nuevoProducto.animales} onChange={(e) => setNuevoProducto({ ...nuevoProducto, category: e.target.value })} className="w-full p-2 mb-2 border rounded">
-                <option value="Perro">Perro</option>
-                <option value="Gato">Gato</option>
-                <option value="Peces">Peces</option>
-                <option value="Perro/Gato">Perro/Gato</option>
-              </select>
-              <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="w-full p-2 mb-2 border rounded"/>
-              <div className="flex justify-end space-x-2">
-                <button type="submit" className="px-4 py-2 bg-green-700 hover:bg-green-800  text-white rounded-lg">Agregar</button>
+            <form onSubmit={handleAgregarProducto} className="flex flex-col gap-2">
+              <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="w-full p-2 border rounded" required />
+              
+              <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value })} className="w-full p-2 border rounded" required>
+                <option value="">Seleccionar Marca</option> {metadata.marcas.map((m) => ( <option key={m.idMarca} value={m.idMarca}>{m.marca}</option> ))} </select>
+
+              <select value={nuevoProducto.idAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idAnimal: e.target.value })} className="w-full p-2 border rounded" required>
+                <option value="">Seleccionar Animal</option> {metadata.animales.map((a) => ( <option key={a.idAnimal} value={a.idAnimal}>{a.animales}</option> ))} </select>
+
+              <select value={nuevoProducto.idEdadAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idEdadAnimal: e.target.value })} className="w-full p-2 border rounded" required>
+                <option value="">Seleccionar Edad</option> {metadata.edades.map((e) => ( <option key={e.idEdadAnimal} value={e.idEdadAnimal}>{e.edadAnimal}</option> ))} </select>
+
+              <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value })} className="w-full p-2 border rounded" required> <option value="">Seleccionar Peso</option> {metadata.pesos.map((p) => ( <option key={p.idPeso} value={p.idPeso}>{p.peso}</option> ))}</select>
+
+              <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precioCompra: e.target.value })} className="w-full p-2 border rounded" required />
+
+              <div className="flex justify-end gap-2 mt-2">
+                <button type="submit" className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg">Agregar</button>
                 <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-4 py-2 bg-red-600 text-white rounded-lg">Cancelar</button>
               </div>
             </form>
@@ -215,14 +266,13 @@ const BusquedaComponentes = () => {
 
       {/* Modal Editar Precio */}
       {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
-            <p className = "my-4">Nombre del producto</p>
-            <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
-            <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
-            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded "/>
-            <div className="flex justify-center space-x-2">
+            <p className="my-2 font-semibold">{productoSeleccionado.descripcion}</p>
+            <p className="my-2 font-semibold text-red-500">Precio anterior: ${productoSeleccionado.precioCompra}</p>
+            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded" />
+            <div className="flex justify-center space-x-2 mt-2">
               <button type="button" onClick={guardarCambios} className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg">Guardar</button>
               <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 rounded-lg px-5 py-2.5">Cancelar</button>
             </div>
