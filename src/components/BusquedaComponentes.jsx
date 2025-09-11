@@ -264,7 +264,7 @@ const BusquedaComponentes = () => {
         </div>
       )}
 
-      {/* Modal Editar Precio */}
+      {/* Modal Editar Precio  */}
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
