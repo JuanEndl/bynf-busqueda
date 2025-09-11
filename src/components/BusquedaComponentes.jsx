@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 const BusquedaComponentes = () => {
@@ -236,37 +237,67 @@ const BusquedaComponentes = () => {
 
       {/* Modal Agregar Producto */}
       {modalAgregarOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-          <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
-            <h2 className="text-lg font-bold mb-4">Agregar Nuevo Producto</h2>
-            <form onSubmit={handleAgregarProducto} className="flex flex-col gap-2">
-              <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="w-full p-2 border rounded" required />
-              
-              <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value })} className="w-full p-2 border rounded" required>
-                <option value="">Seleccionar Marca</option> {metadata.marcas.map((m) => ( <option key={m.idMarca} value={m.idMarca}>{m.marca}</option> ))} </select>
+  <div className="fixed inset-0 flex items-center justify-center bg-black/20">
+    <div className="bg-white p-6 rounded-lg shadow-lg  border">
+      <h2 className="text-xl font-bold mb-6 text-center text-gray-800">
+        Agregar Nuevo Producto
+      </h2>
+      <form onSubmit={handleAgregarProducto} className="grid grid-cols-3 gap-4">
+        <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required/>
+        <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          <option value="">Seleccionar Marca</option>
+          {metadata.marcas.map((m) => (
+            <option key={m.idMarca} value={m.idMarca}>
+              {m.marca}
+            </option>
+          ))}
+        </select>
 
-              <select value={nuevoProducto.idAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idAnimal: e.target.value })} className="w-full p-2 border rounded" required>
-                <option value="">Seleccionar Animal</option> {metadata.animales.map((a) => ( <option key={a.idAnimal} value={a.idAnimal}>{a.animales}</option> ))} </select>
+        <select value={nuevoProducto.idAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idAnimal: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          <option value="">Seleccionar Animal</option>
+          {metadata.animales.map((a) => (
+            <option key={a.idAnimal} value={a.idAnimal}>
+              {a.animales}
+            </option>
+          ))}
+        </select>
 
-              <select value={nuevoProducto.idEdadAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idEdadAnimal: e.target.value })} className="w-full p-2 border rounded" required>
-                <option value="">Seleccionar Edad</option> {metadata.edades.map((e) => ( <option key={e.idEdadAnimal} value={e.idEdadAnimal}>{e.edadAnimal}</option> ))} </select>
+        <select value={nuevoProducto.idEdadAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idEdadAnimal: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          <option value="">Seleccionar Edad</option>
+          {metadata.edades.map((e) => (
+            <option key={e.idEdadAnimal} value={e.idEdadAnimal}>
+              {e.edadAnimal}
+            </option>
+          ))}
+        </select>
 
-              <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value })} className="w-full p-2 border rounded" required> <option value="">Seleccionar Peso</option> {metadata.pesos.map((p) => ( <option key={p.idPeso} value={p.idPeso}>{p.peso}</option> ))}</select>
+        <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value, }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+          <option value="">Seleccionar Peso</option>
+          {metadata.pesos.map((p) => (
+            <option key={p.idPeso} value={p.idPeso}>
+              {p.peso}
+            </option>
+          ))}
+        </select>
 
-              <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precioCompra: e.target.value })} className="w-full p-2 border rounded" required />
+        <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precioCompra: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required/>
 
-              <div className="flex justify-end gap-2 mt-2">
-                <button type="submit" className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg">Agregar</button>
-                <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-4 py-2 bg-red-600 text-white rounded-lg">Cancelar</button>
-              </div>
-            </form>
-          </div>
+        <div className="col-span-2 flex justify-end gap-2 mx-25"> 
+          <button type="submit" className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg shadow">
+            Agregar
+          </button>
+          <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
+            Cancelar
+          </button>
         </div>
-      )}
+      </form>
+    </div>
+  </div>
+)}
 
       {/* Modal Editar Precio  */}
       {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/20">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
             <p className = "my-4">Nombre del producto</p>
