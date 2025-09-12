@@ -31,6 +31,8 @@ const BusquedaComponentes = () => {
     precioCompra: "",
   });
 
+
+
   // Metadata para selects
   const [metadata, setMetadata] = useState({
     animales: [],
@@ -39,8 +41,11 @@ const BusquedaComponentes = () => {
     pesos: [],
   });
 
-  // Alerta
+  // alerta de producto editado correctamente 
   const [alertVisible, setAlertVisible] = useState(false);
+
+  // alerta de producto agregado
+  const [alertAgregarVisible, setAlertAgregarVisible] = useState(false);
 
   const url = import.meta.env.VITE_API_URL;
 
@@ -145,33 +150,36 @@ const BusquedaComponentes = () => {
 
   // Agregar producto
   const handleAgregarProducto = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${url}/productos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nuevoProducto),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert("✅ Producto agregado correctamente");
-        setModalAgregarOpen(false);
-        setNuevoProducto({
-          description: "",
-          idMarca: "",
-          idAnimal: "",
-          idEdadAnimal: "",
-          idPesoProducto: "",
-          precioCompra: "",
-        });
-        mostrarDatos();
-      } else {
-        alert("❌ Error: " + data.error);
-      }
-    } catch (error) {
-      console.error("Error al agregar producto:", error);
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await fetch(`${url}/productos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevoProducto),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+  setModalAgregarOpen(false); // cerrar modal
+  setNuevoProducto({
+    description: "",
+    idMarca: "",
+    idAnimal: "",
+    idEdadAnimal: "",
+    idPesoProducto: "",
+    precioCompra: "",
+  }); // limpiar formulario
+  mostrarDatos(); // actualizar lista
+
+  // Mostrar alerta
+  setAlertAgregarVisible(true);
+  setTimeout(() => setAlertAgregarVisible(false), 4000);
+}
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+  }
+};
 
   // Paginación
   const indexUltimo = paginaActual * productosPorPagina;
@@ -185,6 +193,12 @@ const BusquedaComponentes = () => {
       {alertVisible && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
           <span className="font-medium">¡Precio actualizado correctamente!</span>
+        </div>
+      )}
+      {/* Alerta */}
+      {alertAgregarVisible && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
+          <span className="font-medium">¡Producto agregado correctamente!</span>
         </div>
       )}
 
