@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 const BusquedaComponentes = () => {
@@ -31,8 +30,6 @@ const BusquedaComponentes = () => {
     precioCompra: "",
   });
 
-
-
   // Metadata para selects
   const [metadata, setMetadata] = useState({
     animales: [],
@@ -41,10 +38,8 @@ const BusquedaComponentes = () => {
     pesos: [],
   });
 
-  // alerta de producto editado correctamente 
+  // alertas
   const [alertVisible, setAlertVisible] = useState(false);
-
-  // alerta de producto agregado
   const [alertAgregarVisible, setAlertAgregarVisible] = useState(false);
 
   const url = import.meta.env.VITE_API_URL;
@@ -63,15 +58,12 @@ const BusquedaComponentes = () => {
 
   useEffect(() => {
     mostrarDatos();
-
-    // Traer metadata
     fetch(`${url}/metadata`)
       .then((res) => res.json())
       .then((data) => setMetadata(data))
       .catch((err) => console.error("Error cargando metadata:", err));
   }, []);
 
-  // Manejar cambios en inputs
   const buscadores = (e) => {
     const { name, value } = e.target;
     setBuscador({ ...buscador, [name]: value });
@@ -88,9 +80,7 @@ const BusquedaComponentes = () => {
     }
     if (filtro.kg.trim() !== "") {
       filtrados = filtrados.filter((dato) =>
-        (dato.descripcion || "")
-          .toLowerCase()
-          .includes(filtro.kg.toLowerCase())
+        (dato.descripcion || "").toLowerCase().includes(filtro.kg.toLowerCase())
       );
     }
     if (filtro.marca.trim() !== "") {
@@ -100,7 +90,9 @@ const BusquedaComponentes = () => {
     }
     if (filtro.animales.trim() !== "") {
       filtrados = filtrados.filter((dato) =>
-        (dato.animales || "").toLowerCase().includes(filtro.animales.toLowerCase())
+        (dato.animales || "")
+          .toLowerCase()
+          .includes(filtro.animales.toLowerCase())
       );
     }
     return filtrados;
@@ -113,7 +105,6 @@ const BusquedaComponentes = () => {
     setPaginaActual(1);
   };
 
-  // Editar producto
   const editarProducto = (id) => {
     const producto = productos.find((p) => p.id === id);
     setProductoSeleccionado(producto);
@@ -123,22 +114,24 @@ const BusquedaComponentes = () => {
 
   const guardarCambios = async () => {
     try {
-      const respuesta = await fetch(`${url}/productos/${productoSeleccionado.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ precioCompra: nuevoPrecio }),
-      });
+      const respuesta = await fetch(
+        `${url}/productos/${productoSeleccionado.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ precioCompra: nuevoPrecio }),
+        }
+      );
       if (!respuesta.ok) throw new Error("Error al actualizar");
 
       const actualizados = productos.map((p) =>
-        p.id === productoSeleccionado.id ? { ...p, precioCompra: nuevoPrecio } : p
+        p.id === productoSeleccionado.id
+          ? { ...p, precioCompra: nuevoPrecio }
+          : p
       );
 
       setProductos(actualizados);
-
-      const filtrados = aplicarFiltro(actualizados, buscador);
-      setResultado(filtrados);
-
+      setResultado(aplicarFiltro(actualizados, buscador));
       setModalOpen(false);
       setAlertVisible(true);
       setTimeout(() => setAlertVisible(false), 6000);
@@ -148,38 +141,35 @@ const BusquedaComponentes = () => {
     }
   };
 
-  // Agregar producto
   const handleAgregarProducto = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await fetch(`${url}/productos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nuevoProducto),
-    });
+    e.preventDefault();
+    try {
+      const res = await fetch(`${url}/productos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevoProducto),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
-  setModalAgregarOpen(false); // cerrar modal
-  setNuevoProducto({
-    description: "",
-    idMarca: "",
-    idAnimal: "",
-    idEdadAnimal: "",
-    idPesoProducto: "",
-    precioCompra: "",
-  }); // limpiar formulario
-  mostrarDatos(); // actualizar lista
-
-  // Mostrar alerta
-  setAlertAgregarVisible(true);
-  setTimeout(() => setAlertAgregarVisible(false), 4000);
-}
-  } catch (error) {
-    console.error("Error al agregar producto:", error);
-  }
-};
+      if (res.ok) {
+        setModalAgregarOpen(false);
+        setNuevoProducto({
+          description: "",
+          idMarca: "",
+          idAnimal: "",
+          idEdadAnimal: "",
+          idPesoProducto: "",
+          precioCompra: "",
+        });
+        mostrarDatos();
+        setAlertAgregarVisible(true);
+        setTimeout(() => setAlertAgregarVisible(false), 4000);
+      }
+    } catch (error) {
+      console.error("Error al agregar producto:", error);
+    }
+  };
 
   // Paginación
   const indexUltimo = paginaActual * productosPorPagina;
@@ -189,20 +179,101 @@ const BusquedaComponentes = () => {
 
   return (
     <div className="relative overflow-x-auto">
-      {/* Alerta */}
+      {/* Modal Alerta editar */}
       {alertVisible && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
-          <span className="font-medium">¡Precio actualizado correctamente!</span>
+          <span className="font-medium">
+            ¡Precio actualizado correctamente!
+          </span>
         </div>
       )}
-      {/* Alerta */}
+
+      {/* Modal Alerta agregar */}
       {alertAgregarVisible && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
           <span className="font-medium">¡Producto agregado correctamente!</span>
         </div>
       )}
 
-      {/* Formulario de búsqueda */}
+      {/* Modal Agregar Producto */}
+      {modalAgregarOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/20">
+          <div className="bg-white p-6 rounded-lg shadow-lg  border">
+            <h2 className="text-xl font-bold mb-6 text-center text-gray-800">
+              Agregar Nuevo Producto
+            </h2>
+            <form onSubmit={handleAgregarProducto} className="grid grid-cols-3 gap-4">
+              <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required />
+              <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+                <option value="">Seleccionar Marca</option>
+                {metadata.marcas.map((m) => (
+                  <option key={m.idMarca} value={m.idMarca}>
+                    {m.marca}
+                  </option>
+                ))}
+              </select>
+
+              <select value={nuevoProducto.idAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idAnimal: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+                <option value="">Seleccionar Animal</option>
+                {metadata.animales.map((a) => (
+                  <option key={a.idAnimal} value={a.idAnimal}>
+                    {a.animales}
+                  </option>
+                ))}
+              </select>
+
+              <select value={nuevoProducto.idEdadAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idEdadAnimal: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+                <option value="">Seleccionar Edad</option>
+                {metadata.edades.map((e) => (
+                  <option key={e.idEdadAnimal} value={e.idEdadAnimal}>
+                    {e.edadAnimal}
+                  </option>
+                ))}
+              </select>
+
+              <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value, })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+                <option value="">Seleccionar Peso</option>
+                {metadata.pesos.map((p) => (
+                  <option key={p.idPeso} value={p.idPeso}>
+                    {p.peso}
+                  </option>
+                ))}
+              </select>
+
+              <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precioCompra: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required />
+
+              <div className="col-span-2 flex justify-end gap-2 mx-25">
+                <button type="submit" className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg shadow">
+                  Agregar
+                </button>
+                <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Editar Precio  */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/20">
+          <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
+            <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
+            <p className="my-4">Nombre del producto</p>
+            <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
+            <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
+            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded " />
+            <div className="flex justify-center space-x-2">
+              <button type="button" onClick={guardarCambios} className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg">Guardar</button>
+              <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 rounded-lg px-5 py-2.5">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* Formulario búsqueda */}
       <form onSubmit={handleSearch} className="grid grid-cols-4 gap-5 p-2 border-2 rounded-lg w-full my-5">
         <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Nombre del producto" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
         <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
@@ -217,13 +288,32 @@ const BusquedaComponentes = () => {
         <button type="submit" className="col-span-3 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
           Buscar
         </button>
-        <button type="button" onClick={() => setModalAgregarOpen(true)} className="col-span-1 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+        <button type="button" onClick={() => setModalAgregarOpen(true)} className="col-span-1 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
           Agregar Producto
         </button>
       </form>
 
-      {/* Tabla de productos */}
-      <table className="w-full text-sm text-left rtl:text-right text-dark my-8">
+      {/* Vista Cards en celular */}
+      <div className="grid grid-cols-1 gap-4 md:hidden my-8">
+        {productosActuales.map((item) => (
+          <div key={item.id} className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+            <h2 className="text-lg font-bold mb-2">{item.descripcion}</h2>
+            <p>
+              <span className="font-semibold">Marca:</span> {item.marca}
+            </p>
+            <p>
+              <span className="font-semibold">Animal:</span> {item.animales}
+            </p>
+            <p>
+              <span className="font-semibold">Precio venta 25%:</span> $
+              {(item.precioCompra * 1.25).toFixed(0)}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/*Vista Tabla en desktop */}
+      <table className="hidden md:table w-full text-sm text-left rtl:text-right text-dark my-8">
         <thead className="text-xs uppercase bg-gray-300">
           <tr>
             <th className="text-xl px-6 py-3">Nombre del producto</th>
@@ -241,90 +331,18 @@ const BusquedaComponentes = () => {
               <td className="text-xl px-10 py-5">{item.animales}</td>
               <td className="text-xl px-10 py-5">
                 $ {item.precioCompra}
-                <button className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</button>
+                <button className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>
+                  Editar
+                </button>
               </td>
-              <td className="text-xl px-20 py-5">$ {(item.precioCompra * 1.25).toFixed(0)}</td>
+              <td className="text-xl px-20 py-5">
+                $ {(item.precioCompra * 1.25).toFixed(0)}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Modal Agregar Producto */}
-      {modalAgregarOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/20">
-    <div className="bg-white p-6 rounded-lg shadow-lg  border">
-      <h2 className="text-xl font-bold mb-6 text-center text-gray-800">
-        Agregar Nuevo Producto
-      </h2>
-      <form onSubmit={handleAgregarProducto} className="grid grid-cols-3 gap-4">
-        <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required/>
-        <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
-          <option value="">Seleccionar Marca</option>
-          {metadata.marcas.map((m) => (
-            <option key={m.idMarca} value={m.idMarca}>
-              {m.marca}
-            </option>
-          ))}
-        </select>
-
-        <select value={nuevoProducto.idAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idAnimal: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
-          <option value="">Seleccionar Animal</option>
-          {metadata.animales.map((a) => (
-            <option key={a.idAnimal} value={a.idAnimal}>
-              {a.animales}
-            </option>
-          ))}
-        </select>
-
-        <select value={nuevoProducto.idEdadAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idEdadAnimal: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
-          <option value="">Seleccionar Edad</option>
-          {metadata.edades.map((e) => (
-            <option key={e.idEdadAnimal} value={e.idEdadAnimal}>
-              {e.edadAnimal}
-            </option>
-          ))}
-        </select>
-
-        <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value, }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
-          <option value="">Seleccionar Peso</option>
-          {metadata.pesos.map((p) => (
-            <option key={p.idPeso} value={p.idPeso}>
-              {p.peso}
-            </option>
-          ))}
-        </select>
-
-        <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precioCompra: e.target.value }) } className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required/>
-
-        <div className="col-span-2 flex justify-end gap-2 mx-25"> 
-          <button type="submit" className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg shadow">
-            Agregar
-          </button>
-          <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
-      {/* Modal Editar Precio  */}
-      {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/20">
-          <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
-            <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
-            <p className = "my-4">Nombre del producto</p>
-            <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
-            <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
-            <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded "/>
-            <div className="flex justify-center space-x-2">
-              <button type="button" onClick={guardarCambios} className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg">Guardar</button>
-              <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 rounded-lg px-5 py-2.5">Cancelar</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Paginación */}
       <div className="flex flex-col items-center mt-4">
@@ -340,6 +358,7 @@ const BusquedaComponentes = () => {
         </div>
       </div>
     </div>
+
   );
 };
 
