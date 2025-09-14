@@ -10,7 +10,7 @@ const BusquedaComponentes = () => {
   });
   const [resultado, setResultado] = useState([]);
 
-  // Paginación
+  // Paginación 
   const [paginaActual, setPaginaActual] = useState(1);
   const productosPorPagina = 12;
 
