@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Drawer from "./Drawer";
 
 const BusquedaComponentes = () => {
   const [productos, setProductos] = useState([]);
@@ -44,7 +45,7 @@ const BusquedaComponentes = () => {
 
   const url = import.meta.env.VITE_API_URL;
 
-  // Traer productos
+  // Traer productos 
   const mostrarDatos = async () => {
     try {
       const respuesta = await fetch(`${url}/productos`);
@@ -179,6 +180,25 @@ const BusquedaComponentes = () => {
 
   return (
     <div className="relative overflow-x-auto">
+
+      {/* Drawer para móvil */}
+      <Drawer>
+        {/* Aquí puedes poner contenido para mobile, ejemplo el buscador */}
+        <form onSubmit={handleSearch} className="flex flex-col gap-3">
+          <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Buscar producto" className="p-2 rounded bg-gray-700 border border-gray-600 text-white"/>
+          <select name="animales" value={buscador.animales} onChange={buscadores} className="p-2 rounded bg-gray-700 border border-gray-600 text-white">
+            <option value="">Elegir animal (todos)</option>
+            <option value="Perro">Perro</option>
+            <option value="Gato">Gato</option>
+            <option value="Peces">Peces</option>
+            <option value="Perro/Gato">Perro/Gato</option>
+          </select>
+          <button type="submit" className="text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+            Buscar
+          </button>
+        </form>
+      </Drawer>
+
       {/* Modal Alerta editar */}
       {alertVisible && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
@@ -274,7 +294,7 @@ const BusquedaComponentes = () => {
 
 
       {/* Formulario búsqueda */}
-      <form onSubmit={handleSearch} className="grid grid-cols-4 gap-5 p-2 border-2 rounded-lg w-full my-5">
+      <form onSubmit={handleSearch} className="hidden md:block  grid-cols-4 gap-5 p-2 border-2 rounded-lg w-full my-5">
         <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Nombre del producto" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
         <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
         <input type="text" name="marca" value={buscador.marca} onChange={buscadores} placeholder="Marca" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
@@ -288,7 +308,7 @@ const BusquedaComponentes = () => {
         <button type="submit" className="col-span-3 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
           Buscar
         </button>
-        <button type="button" onClick={() => setModalAgregarOpen(true)} className="col-span-1 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
+        <button type="button" onClick={() => setModalAgregarOpen(true)} className="col-span-1 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
           Agregar Producto
         </button>
       </form>
