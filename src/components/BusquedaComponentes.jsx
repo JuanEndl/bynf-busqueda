@@ -190,6 +190,8 @@ const BusquedaComponentes = () => {
         {/* Aquí puedes poner contenido para mobile, ejemplo el buscador */}
         <form onSubmit={handleSearch} className="flex flex-col gap-3">
           <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Buscar producto" className="p-2 rounded bg-gray-700 border border-gray-600 text-white"/>
+          <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+          <input type="text" name="marca" value={buscador.marca} onChange={buscadores} placeholder="Marca" className="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
           <select name="animales" value={buscador.animales} onChange={buscadores} className="p-2 rounded bg-gray-700 border border-gray-600 text-white">
             <option value="">Elegir animal (todos)</option>
             <option value="Perro">Perro</option>
