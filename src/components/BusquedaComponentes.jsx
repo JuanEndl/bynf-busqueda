@@ -19,6 +19,8 @@ const BusquedaComponentes = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [nuevoPrecio, setNuevoPrecio] = useState("");
+  const [porcentaje, setPorcentaje] = useState("");
+  const [precioCalculado, setPrecioCalculado] = useState(null);
 
   // Modal agregar producto
   const [modalAgregarOpen, setModalAgregarOpen] = useState(false);
@@ -282,6 +284,25 @@ const BusquedaComponentes = () => {
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
             <p className="my-4">Nombre del producto</p>
             <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
+            <input type="number" placeholder="Calcular el %" value={porcentaje} onChange={(e) => setPorcentaje(Number(e.target.value))} className="border rounded px-4 py-2"/>
+
+            {/*boton calculador de %*/}
+            <button type="button"
+              onClick={() => {
+              if (!productoSeleccionado) return;
+              const base = Number(productoSeleccionado.precioCompra) || 0;
+              const nuevo = (base * (1 + porcentaje / 100)).toFixed(0);
+              setPrecioCalculado(nuevo); }} className="px-4 py-2  text-white bg-blue-600 hover:bg-blue-700 rounded-lg mx-2">
+              Calcular
+            </button>
+            
+            {/*Modal del resultado del %*/}
+            {precioCalculado && (
+              <p className="mt-4 font-bold text-green-600">
+                Resultado del %: ${precioCalculado}
+              </p>
+            )}
+
             <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
             <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded " />
             <div className="flex justify-center space-x-2">
