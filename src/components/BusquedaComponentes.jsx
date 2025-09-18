@@ -215,7 +215,7 @@ const BusquedaComponentes = () => {
         </div>
       )}
 
-      {/* Modal Agregar Producto */}
+      {/* Modal Agregar Producto*/}
       {modalAgregarOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20">
           <div className="bg-white p-6 rounded-lg shadow-lg  border">
