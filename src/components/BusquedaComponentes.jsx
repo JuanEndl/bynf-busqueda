@@ -350,7 +350,7 @@ const BusquedaComponentes = () => {
               <span className="font-semibold">Animal:</span> {item.animales}
             </p>
             <p>
-              <span className="font-semibold">Precio venta 25%:</span> $
+              <span className="font-semibold">Precio venta:</span> $
               {(item.precioCompra * 1.25).toFixed(0)}
             </p>
           </div>
