@@ -112,6 +112,8 @@ const BusquedaComponentes = () => {
     const producto = productos.find((p) => p.id === id);
     setProductoSeleccionado(producto);
     setNuevoPrecio(producto.precioCompra);
+    setPorcentaje("");           // reinicia porcentaje
+    setPrecioCalculado(null);   // reinicia el resultado del % calculado
     setModalOpen(true);
   };
 
@@ -290,7 +292,7 @@ const BusquedaComponentes = () => {
             <button type="button"
               onClick={() => {
               if (!productoSeleccionado) return;
-              const base = Number(productoSeleccionado.precioCompra) || 0;
+              const base = Number(productoSeleccionado.precioCompra);
               const nuevo = (base * (1 + porcentaje / 100)).toFixed(0);
               setPrecioCalculado(nuevo); }} className="px-4 py-2  text-white bg-blue-600 hover:bg-blue-700 rounded-lg mx-2">
               Calcular
