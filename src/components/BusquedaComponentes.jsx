@@ -185,9 +185,9 @@ const BusquedaComponentes = () => {
   return (
     <div className="relative overflow-x-auto">
 
-      {/* Drawer para móvil */}
+      {/* Drawer para movil */}
       <Drawer>
-        {/* Aquí puedes poner contenido para mobile, ejemplo el buscador */}
+        {/* contenido para movil, buscador */}
         <form onSubmit={handleSearch} className="flex flex-col gap-3">
           <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Buscar producto" className="p-2 rounded bg-gray-700 border border-gray-600 text-white"/>
           <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
