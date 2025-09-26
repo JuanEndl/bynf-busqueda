@@ -357,7 +357,7 @@ const BusquedaComponentes = () => {
         ))}
       </div>
 
-      {/*Vista Tabla en desktop */}
+      {/*Vista Tabla en desktop TODO (agregar x para eliminar el producto) */} 
       <table className="hidden md:table w-full text-sm text-left rtl:text-right text-dark my-8">
         <thead className="text-xs uppercase bg-gray-300">
           <tr>
