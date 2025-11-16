@@ -289,8 +289,8 @@ const BusquedaComponentes = () => {
 
       {/* Modal Agregar Producto*/}
       {modalAgregarOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/20">
-          <div className="bg-white p-6 rounded-lg shadow-lg  border">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white p-6 rounded-lg shadow-lg  border-2 border-solid">
             <h2 className="text-xl font-bold mb-6 text-center text-gray-800">Agregar Nuevo Producto</h2>
             <form onSubmit={handleAgregarProducto} className="grid grid-cols-3 gap-4">
               <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required />
@@ -335,7 +335,7 @@ const BusquedaComponentes = () => {
 
       {/* Modal Editar Precio  */}
       {modalOpen && productoSeleccionado && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/20">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
             <p className="my-4">Nombre del producto</p>
@@ -366,7 +366,7 @@ const BusquedaComponentes = () => {
       {/* Modal Eliminar confirmación */}
       {modalEliminarOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Eliminar productos</h2>
 
             {seleccionados.length === 0 ? (
