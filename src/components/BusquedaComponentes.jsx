@@ -33,17 +33,18 @@ const BusquedaComponentes = () => {
     precioCompra: "",
   });
 
-  // Metadata para selects
-  const [metadata, setMetadata] = useState({
-    animales: [],
-    edades: [],
-    marcas: [],
-    pesos: [],
-  });
+  // Estado para guardar productos seleccionados
+  const [seleccionados, setSeleccionados] = useState([]);
 
-  // alertas
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [alertAgregarVisible, setAlertAgregarVisible] = useState(false);
+  // Modal eliminar producto
+  const [modalEliminarOpen, setModalEliminarOpen] = useState(false);
+
+  // Modal eliminacion seleccionados
+  const productosSeleccionados = productos.filter(p => seleccionados.includes(p.id));
+
+
+  // Alerta de eliminación (toast)
+  const [alertEliminarVisible, setAlertEliminarVisible] = useState(false);
 
   const url = import.meta.env.VITE_API_URL;
 
@@ -65,7 +66,20 @@ const BusquedaComponentes = () => {
       .then((res) => res.json())
       .then((data) => setMetadata(data))
       .catch((err) => console.error("Error cargando metadata:", err));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Metadata para selects
+  const [metadata, setMetadata] = useState({
+    animales: [],
+    edades: [],
+    marcas: [],
+    pesos: [],
+  });
+
+  // alertas
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertAgregarVisible, setAlertAgregarVisible] = useState(false);
 
   const buscadores = (e) => {
     const { name, value } = e.target;
@@ -167,12 +181,63 @@ const BusquedaComponentes = () => {
           idPesoProducto: "",
           precioCompra: "",
         });
+        // refrescar
         mostrarDatos();
         setAlertAgregarVisible(true);
         setTimeout(() => setAlertAgregarVisible(false), 4000);
       }
     } catch (error) {
       console.error("Error al agregar producto:", error);
+    }
+  };
+
+  // funcion que marca/desmarca un checkbox
+  const toggleSeleccion = (id) => {
+    setSeleccionados((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  // seleccionar todos (sólo los visibles en la página actual)
+  const toggleSeleccionTodos = () => {
+    const idsPagina = productosActuales.map((p) => p.id);
+    const todosSeleccionados = idsPagina.every((id) => seleccionados.includes(id));
+
+    if (todosSeleccionados) {
+      // deseleccionar los de la página
+      setSeleccionados((prev) => prev.filter((id) => !idsPagina.includes(id)));
+    } else {
+      // agregar los que faltan de la página
+      setSeleccionados((prev) => Array.from(new Set([...prev, ...idsPagina])));
+    }
+  };
+
+  // Función que elimina múltiples productos
+  const eliminarProductosSeleccionados = async () => {
+    try {
+      // opcional: mostrar loading
+      for (const id of seleccionados) {
+        await fetch(`${url}/productos/${id}`, { method: "DELETE" });
+      }
+
+      // actualizar front
+      const nuevos = productos.filter((p) => !seleccionados.includes(p.id));
+      setProductos(nuevos);
+      setResultado(aplicarFiltro(nuevos, buscador));
+
+      setSeleccionados([]);
+      setModalEliminarOpen(false);
+
+      // mostrar toast de eliminado
+      setAlertEliminarVisible(true);
+      setTimeout(() => setAlertEliminarVisible(false), 3000);
+
+      // opcional: refrescar desde el servidor
+      // await mostrarDatos();
+
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      alert("Error eliminando producto");
     }
   };
 
@@ -189,7 +254,7 @@ const BusquedaComponentes = () => {
       <Drawer>
         {/* contenido para movil, buscador */}
         <form onSubmit={handleSearch} className="flex flex-col gap-3">
-          <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Buscar producto" className="p-2 rounded bg-gray-700 border border-gray-600 text-white"/>
+          <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Buscar producto" className="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
           <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
           <input type="text" name="marca" value={buscador.marca} onChange={buscadores} placeholder="Marca" className="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
           <select name="animales" value={buscador.animales} onChange={buscadores} className="p-2 rounded bg-gray-700 border border-gray-600 text-white">
@@ -199,25 +264,26 @@ const BusquedaComponentes = () => {
             <option value="Peces">Peces</option>
             <option value="Perro/Gato">Perro/Gato</option>
           </select>
-          <button type="submit" className="text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-            Buscar
-          </button>
+          <button type="submit" className="text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Buscar</button>
         </form>
       </Drawer>
 
-      {/* Modal Alerta editar */}
+      {/* Alertas */}
       {alertVisible && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
-          <span className="font-medium">
-            ¡Precio actualizado correctamente!
-          </span>
+          <span className="font-medium">¡Precio actualizado correctamente!</span>
         </div>
       )}
 
-      {/* Modal Alerta agregar */}
       {alertAgregarVisible && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
           <span className="font-medium">¡Producto agregado correctamente!</span>
+        </div>
+      )}
+
+      {alertEliminarVisible && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50">
+          <span className="font-medium">¡Producto(s) eliminado(s) correctamente!</span>
         </div>
       )}
 
@@ -225,56 +291,42 @@ const BusquedaComponentes = () => {
       {modalAgregarOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20">
           <div className="bg-white p-6 rounded-lg shadow-lg  border">
-            <h2 className="text-xl font-bold mb-6 text-center text-gray-800">
-              Agregar Nuevo Producto
-            </h2>
+            <h2 className="text-xl font-bold mb-6 text-center text-gray-800">Agregar Nuevo Producto</h2>
             <form onSubmit={handleAgregarProducto} className="grid grid-cols-3 gap-4">
               <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required />
               <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
                 <option value="">Seleccionar Marca</option>
                 {metadata.marcas.map((m) => (
-                  <option key={m.idMarca} value={m.idMarca}>
-                    {m.marca}
-                  </option>
+                  <option key={m.idMarca} value={m.idMarca}>{m.marca}</option>
                 ))}
               </select>
 
               <select value={nuevoProducto.idAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idAnimal: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
                 <option value="">Seleccionar Animal</option>
                 {metadata.animales.map((a) => (
-                  <option key={a.idAnimal} value={a.idAnimal}>
-                    {a.animales}
-                  </option>
+                  <option key={a.idAnimal} value={a.idAnimal}>{a.animales}</option>
                 ))}
               </select>
 
               <select value={nuevoProducto.idEdadAnimal} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idEdadAnimal: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
                 <option value="">Seleccionar Edad</option>
                 {metadata.edades.map((e) => (
-                  <option key={e.idEdadAnimal} value={e.idEdadAnimal}>
-                    {e.edadAnimal}
-                  </option>
+                  <option key={e.idEdadAnimal} value={e.idEdadAnimal}>{e.edadAnimal}</option>
                 ))}
               </select>
 
-              <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value, })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
+              <select value={nuevoProducto.idPesoProducto} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idPesoProducto: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
                 <option value="">Seleccionar Peso</option>
                 {metadata.pesos.map((p) => (
-                  <option key={p.idPeso} value={p.idPeso}>
-                    {p.peso}
-                  </option>
+                  <option key={p.idPeso} value={p.idPeso}>{p.peso}</option>
                 ))}
               </select>
 
               <input type="number" placeholder="Precio Compra" value={nuevoProducto.precioCompra} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precioCompra: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required />
 
               <div className="col-span-2 flex justify-end gap-2 mx-25">
-                <button type="submit" className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg shadow">
-                  Agregar
-                </button>
-                <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
-                  Cancelar
-                </button>
+                <button type="submit" className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg shadow">Agregar</button>
+                <button type="button" onClick={() => setModalAgregarOpen(false)} className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">Cancelar</button>
               </div>
             </form>
           </div>
@@ -282,29 +334,23 @@ const BusquedaComponentes = () => {
       )}
 
       {/* Modal Editar Precio  */}
-      {modalOpen && (
+      {modalOpen && productoSeleccionado && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20">
           <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-96 border-2 border-solid">
             <h2 className="text-lg font-bold mb-4">Editar precio de compra</h2>
             <p className="my-4">Nombre del producto</p>
             <p className="my-4 font-bold overline">{productoSeleccionado.descripcion}</p>
-            <input type="number" placeholder="Calcular el %" value={porcentaje} onChange={(e) => setPorcentaje(Number(e.target.value))} className="border rounded px-4 py-2"/>
+            <input type="number" placeholder="Calcular el %" value={porcentaje} onChange={(e) => setPorcentaje(Number(e.target.value))} className="border rounded px-4 py-2" />
 
-            {/*boton calculador de %*/}
-            <button type="button"
-              onClick={() => {
+            <button type="button" onClick={() => {
               if (!productoSeleccionado) return;
               const base = Number(productoSeleccionado.precioCompra);
               const nuevo = (base * (1 + porcentaje / 100)).toFixed(0);
-              setPrecioCalculado(nuevo); }} className="px-4 py-2  text-white bg-blue-600 hover:bg-blue-700 rounded-lg mx-2">
-              Calcular
-            </button>
-            
-            {/*Modal del resultado del %*/}
+              setPrecioCalculado(nuevo);
+            }} className="px-4 py-2  text-white bg-blue-600 hover:bg-blue-700 rounded-lg mx-2">Calcular</button>
+
             {precioCalculado && (
-              <p className="mt-4 font-bold text-green-600">
-                Resultado del %: ${precioCalculado}
-              </p>
+              <p className="mt-4 font-bold text-green-600">Resultado del %: ${precioCalculado}</p>
             )}
 
             <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
@@ -317,8 +363,37 @@ const BusquedaComponentes = () => {
         </div>
       )}
 
+      {/* Modal Eliminar confirmación */}
+      {modalEliminarOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-bold mb-4">Eliminar productos</h2>
 
-      {/* Formulario búsqueda */}
+            {seleccionados.length === 0 ? (
+              <p className="text-red-600 font-semibold">No seleccionaste ningún producto.</p>
+            ) : (
+              <p>¿Seguro que deseas eliminar <b>{seleccionados.length}</b> Producto(s)?</p>
+            )}
+
+              <ul className="mt-3 bg-gray-100 p-3 rounded max-h-40 overflow-y-auto text-sm">
+            {productos
+              .filter((p) => seleccionados.includes(p.id))
+              .map((p) => (
+                <li key={p.id} className="text-red-600 border py-1 mb-2">
+                  {p.descripcion}
+                </li>
+              ))}
+          </ul>
+
+            <div className="flex justify-end mt-6 space-x-3">
+              <button className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={() => setModalEliminarOpen(false)}>Cancelar</button>
+              <button className="text-white bg-red-600 hover:bg-red-800 rounded-lg px-5 py-2.5" disabled={seleccionados.length === 0} onClick={eliminarProductosSeleccionados}>Eliminar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Formulario búsqueda desktop*/}
       <form onSubmit={handleSearch} className="grid-cols-4 gap-5 p-2 border-2 rounded-lg w-full my-5 hidden md:grid">
         <input type="text" name="descripcion" value={buscador.descripcion} onChange={buscadores} placeholder="Nombre del producto" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
         <input type="text" name="kg" value={buscador.kg} onChange={buscadores} placeholder="Kg" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50" />
@@ -330,12 +405,9 @@ const BusquedaComponentes = () => {
           <option value="Peces">Peces</option>
           <option value="Perro/Gato">Perro/Gato</option>
         </select>
-        <button type="submit" className="col-span-3 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-          Buscar
-        </button>
-        <button type="button" onClick={() => setModalAgregarOpen(true)} className="col-span-1 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-          Agregar Producto
-        </button>
+        <button type="submit" className="col-span-2 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Buscar</button>
+        <button type="button" onClick={() => setModalAgregarOpen(true)} className="col-span-1 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Agregar Producto</button>
+        <button type="button" onClick={() => setModalEliminarOpen(true)} className="col-span-1 text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Eliminar</button>
       </form>
 
       {/* Vista Cards en celular */}
@@ -343,21 +415,14 @@ const BusquedaComponentes = () => {
         {productosActuales.map((item) => (
           <div key={item.id} className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
             <h2 className="text-lg font-bold mb-2">{item.descripcion}</h2>
-            <p>
-              <span className="font-semibold">Marca:</span> {item.marca}
-            </p>
-            <p>
-              <span className="font-semibold">Animal:</span> {item.animales}
-            </p>
-            <p>
-              <span className="font-semibold">Precio venta:</span> $
-              {(item.precioCompra * 1.25).toFixed(0)}
-            </p>
+            <p><span className="font-semibold">Marca:</span> {item.marca}</p>
+            <p><span className="font-semibold">Animal:</span> {item.animales}</p>
+            <p><span className="font-semibold">Precio venta:</span> $ {(item.precioCompra * 1.25).toFixed(0)}</p>
           </div>
         ))}
       </div>
 
-      {/*Vista Tabla en desktop TODO (agregar x para eliminar el producto ) */} 
+      {/*Vista Tabla en desktop */} 
       <table className="hidden md:table w-full text-sm text-left rtl:text-right text-dark my-8">
         <thead className="text-xs uppercase bg-gray-300">
           <tr>
@@ -366,6 +431,9 @@ const BusquedaComponentes = () => {
             <th className="text-xl px-6 py-3">Animales</th>
             <th className="text-xl px-6 py-3">Precio Compra</th>
             <th className="text-xl px-6 py-3">Precio Venta al 25%</th>
+            <th className="text-xl px-6 py-3 flex items-center gap-2">Seleccionar
+              <input type="checkbox" className="ml-2 accent-red-600 w-5 h-5" onChange={toggleSeleccionTodos} checked={productosActuales.length > 0 && productosActuales.every((p) => seleccionados.includes(p.id))} />
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -376,26 +444,26 @@ const BusquedaComponentes = () => {
               <td className="text-xl px-10 py-5">{item.animales}</td>
               <td className="text-xl px-10 py-5">
                 $ {item.precioCompra}
-                <button className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>
-                  Editar
-                </button>
+                <button className="ml-5 font-medium text-blue-600 hover:underline" onClick={() => editarProducto(item.id)}>Editar</button>
               </td>
+              <td className="text-xl px-20 py-5">$ {(item.precioCompra * 1.25).toFixed(0)}</td>
               <td className="text-xl px-20 py-5">
-                $ {(item.precioCompra * 1.25).toFixed(0)}
+                <input
+                  type="checkbox"
+                  className="accent-red-600 w-5 h-5 cursor-pointer"
+                  checked={seleccionados.includes(item.id)}
+                  onChange={() => toggleSeleccion(item.id)}
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-
       {/* Paginación */}
       <div className="flex flex-col items-center mt-4">
         <span className="text-sm text-gray-700">
-          Mostrando{" "}
-          <span className="font-semibold text-gray-900">{resultado.length === 0 ? 0 : indexPrimero + 1}</span>{" "}
-          a <span className="font-semibold text-gray-900">{Math.min(indexUltimo, resultado.length)}</span>{" "}
-          de <span className="font-semibold text-gray-900">{resultado.length}</span> entradas
+          Mostrando <span className="font-semibold text-gray-900">{resultado.length === 0 ? 0 : indexPrimero + 1}</span> a <span className="font-semibold text-gray-900">{Math.min(indexUltimo, resultado.length)}</span> de <span className="font-semibold text-gray-900">{resultado.length}</span> entradas
         </span>
         <div className="inline-flex mt-2 xs:mt-0 space-x-2">
           <button onClick={() => setPaginaActual(paginaActual - 1)} disabled={paginaActual === 1} className="px-4 h-10 bg-gray-800 text-white rounded-l disabled:opacity-50">Anterior</button>
@@ -403,7 +471,6 @@ const BusquedaComponentes = () => {
         </div>
       </div>
     </div>
-
   );
 };
 
