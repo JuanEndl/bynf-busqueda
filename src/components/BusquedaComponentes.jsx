@@ -375,7 +375,7 @@ const BusquedaComponentes = () => {
               <p>¿Seguro que deseas eliminar <b>{seleccionados.length}</b> Producto(s)?</p>
             )}
 
-              <ul className="mt-3 bg-gray-100 p-3 rounded max-h-40 overflow-y-auto text-sm">
+              <ul className="mt-3 bg-gray-200 p-3 rounded max-h-40 overflow-y-auto text-sm">
             {productos
               .filter((p) => seleccionados.includes(p.id))
               .map((p) => (
