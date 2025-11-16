@@ -356,8 +356,8 @@ const BusquedaComponentes = () => {
             <p className="my-4 font-bold text-red-500 rounded-lg overline">Precio anterior ${productoSeleccionado.precioCompra}</p>
             <input type="number" value={nuevoPrecio} onChange={(e) => setNuevoPrecio(e.target.value)} placeholder="Ingresar precio nuevo" className="p-2 my-2 border rounded " />
             <div className="flex justify-center space-x-2">
-              <button type="button" onClick={guardarCambios} className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg">Guardar</button>
-              <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 rounded-lg px-5 py-2.5">Cancelar</button>
+              <button type="button" onClick={guardarCambios} className="text-white bg-green-700 hover:bg-green-800 rounded-lg px-5 py-2.5">Guardar</button>
+              <button onClick={() => setModalOpen(false)} className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-5 py-2.5">Cancelar</button>
             </div>
           </div>
         </div>
