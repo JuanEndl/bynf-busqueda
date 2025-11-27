@@ -294,6 +294,7 @@ const BusquedaComponentes = () => {
             <h2 className="text-xl font-bold mb-6 text-center text-gray-800">Agregar Nuevo Producto</h2>
             <form onSubmit={handleAgregarProducto} className="grid grid-cols-3 gap-4">
               <input type="text" placeholder="Descripción" value={nuevoProducto.description} onChange={(e) => setNuevoProducto({ ...nuevoProducto, description: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required />
+              
               <select value={nuevoProducto.idMarca} onChange={(e) => setNuevoProducto({ ...nuevoProducto, idMarca: e.target.value })} className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" required>
                 <option value="">Seleccionar Marca</option>
                 {metadata.marcas.map((m) => (
